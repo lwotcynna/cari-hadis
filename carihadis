@@ -97,4 +97,6 @@ except TypeError:
 except HTTPError as er:
     print(f'{red}E:{zero} data tidak dapat ditemukan')
 except URLError as er:
-    print(f'{red}E:{zero} Pastikan Anda memiliki koneksi internet yang stabil')
+    print(f'{yellow}W:{zero} tidak dapat ditemukan')
+    print(f'{yellow}W:{zero} Pastikan Anda memiliki koneksi internet yang stabil')
+
