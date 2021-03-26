@@ -12,6 +12,11 @@ $ chmod +x carihadis
 $ ./carihadis
 ```
 
+### known bugs
+* Arbain_Nawawi_II json decode error
+* Penjelasan_Hadis_Pilihan
+* dan lain sebagainya :(
+
 # Thanks to
 * [dannsbass](https://github.com/dannsbass)
 * [tutermuxid](http://t.me/tutermuxid)

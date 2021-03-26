@@ -18,7 +18,7 @@ grey = '\033[90m'
 def cari_hadis():
     url = api +'?kitab=' + kitab + '&id=' + ID
     raw = urlopen(url)
-    JSON = json.loads(str(bs(raw, 'html.parser').text))
+    JSON = json.loads(bs(raw, 'html.parser').text)
     data = JSON['data']['1']
     nass = data['nass']
     terjemah = data['terjemah']
@@ -36,17 +36,16 @@ def cari_kata_kunci():
     global kitab, ID, query
     url = api +'?q='+ query
     raw = urlopen(url)
-    JSON = json.loads(str(bs(raw, 'html.parser').text))
+    JSON = json.loads(bs(raw, 'html.parser').text)
     data = JSON['data']
     jumlah_kitab = 0
-    for i in range(len(JSON['data'])):
+    for i in range(len(data)):
         kitab = data[i]['kitab']
         jumlah_kitab += 1
         print(str(i+1) +'. '+ kitab)
     pilih = int(input(f'{yellow}pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')) - 1
     kitab = data[pilih]['kitab']
     ID = data[pilih]['id']
-    print('nomor hadits:')
     for j in range(len(ID)):
         print(green + ID[j]+' ', end='')
     print('')
@@ -64,8 +63,10 @@ if len(args) == 1:
 |_|    |___/\n-----------------{reset}
 Contoh pemakaian:
 
-{yellow}./carihadis {grey}Arbain_Nawawi_I:12{yellow}
-./carihadis {grey}puasa ramadhan{reset}""")
+ {yellow}./carihadis {grey}Arbain_Nawawi_I:12{yellow}
+ ./carihadis {grey}puasa ramadhan{reset}
+
+py-hadith v0.0.1-beta""")
 elif len(args) == 2:
     try:
         arg = args[1].split(':')
@@ -93,10 +94,11 @@ except KeyboardInterrupt:
 except NameError:
     pass
 except TypeError:
-    print(f'{yellow}Maaf, tidak ditemukan kasil yang tepat :({zero}')
-except HTTPError as er:
+    print(f'{yellow}Maaf, terjadi kesalaha :({zero}')
+except HTTPError:
     print(f'{red}E:{zero} data tidak dapat ditemukan')
-except URLError as er:
+except URLError:
     print(f'{yellow}W:{zero} tidak dapat ditemukan')
     print(f'{yellow}W:{zero} Pastikan Anda memiliki koneksi internet yang stabil')
-
+except json.decoder.JSONDecodeError:
+    print(f'{red}oops, terjadi kesalahan saat parsing{zero}')
