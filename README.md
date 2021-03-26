@@ -6,7 +6,7 @@ quick start:
 ```bash
 $ pkg install python 
 $ pip install bs4
-$ git clone https://github.com/annzc/cari-hadis.git
+$ cd && git clone https://github.com/annzc/cari-hadis.git
 $ cd cari-hadis
 $ chmod +x carihadis
 $ ./carihadis
