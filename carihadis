@@ -1,0 +1,100 @@
+#!/data/data/com.termux/files/usr/bin/env python
+from urllib.request import urlopen
+from urllib.error import URLError, HTTPError
+from bs4 import BeautifulSoup as bs
+import json, sys, re
+
+api = 'http://api.carihadis.com/'
+
+# variabel warna
+zero = '\033[0m'
+reset = '\033[0;1m'
+yellow = '\033[1;93m'
+red = '\033[1;91m'
+green = '\033[1;92m'
+blue = '\033[1;94m'
+grey = '\033[90m'
+
+def cari_hadis():
+    url = api +'?kitab=' + kitab + '&id=' + ID
+    raw = urlopen(url)
+    JSON = json.loads(str(bs(raw, 'html.parser').text))
+    data = JSON['data']['1']
+    nass = data['nass']
+    terjemah = data['terjemah']
+    terjemah = re.sub(r'\[', yellow, terjemah)
+    terjemah = re.sub(r'\]', reset, terjemah)
+    terjemah = re.sub(re.compile('<.*?>'), '', terjemah)
+    title = 'Kitab '+ kitab +' nomer '+ ID
+    print(green +'-' * len(title))
+    print(title)
+    print('-' * len(title) + zero)
+    print(blue+nass+reset)
+    print('\nArtinya:\n', reset + terjemah + zero)
+
+def cari_kata_kunci():
+    global kitab, ID, query
+    url = api +'?q='+ query
+    raw = urlopen(url)
+    JSON = json.loads(str(bs(raw, 'html.parser').text))
+    data = JSON['data']
+    jumlah_kitab = 0
+    for i in range(len(JSON['data'])):
+        kitab = data[i]['kitab']
+        jumlah_kitab += 1
+        print(str(i+1) +'. '+ kitab)
+    pilih = int(input(f'{yellow}pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')) - 1
+    kitab = data[pilih]['kitab']
+    ID = data[pilih]['id']
+    print('nomor hadits:')
+    for j in range(len(ID)):
+        print(green + ID[j]+' ', end='')
+    print('')
+    pilih = input(f'{yellow}pilih nomor Hadis. Misalnya saja, ' + ID[0] + f': {zero}')
+    ID = pilih
+
+# eksekusi dimulai!
+args = sys.argv
+if len(args) == 1:
+    print(f"""{blue}                   _   _           _ _ _   _
+ _ __  _   _      | | | | __ _  __| (_) |_| |__
+| '_ \| | | |_____| |_| |/ _` |/ _` | | __| '_ \\
+| |_) | |_| |_____|  _  | (_| | (_| | | |_| | | |
+| .__/ \__, |     |_| |_|\__,_|\__,_|_|\__|_| |_|
+|_|    |___/\n-----------------{reset}
+Contoh pemakaian:
+
+{yellow}./carihadis {grey}Arbain_Nawawi_I:12{yellow}
+./carihadis {grey}puasa ramadhan{reset}""")
+elif len(args) == 2:
+    try:
+        arg = args[1].split(':')
+        if len(arg) > 1:
+            mode = 'k'
+            kitab = arg[0]
+            ID = arg[1]
+        else:
+            raise TypeError
+    except TypeError:
+        mode = ''
+        query = '+'.join(args[1:])
+elif len(args) > 2:
+    mode = ''
+    query = '+'.join(args[1:])
+
+try:
+    if mode == 'k':
+        cari_hadis()
+    else:
+        cari_kata_kunci()
+        cari_hadis()
+except KeyboardInterrupt:
+    print(f'{red}dibatalkan!{zero}')
+except NameError:
+    pass
+except TypeError:
+    print(f'{yellow}Maaf, tidak ditemukan kasil yang tepat :({zero}')
+except HTTPError as er:
+    print(f'{red}E:{zero} data tidak dapat ditemukan')
+except URLError as er:
+    print(f'{red}E:{zero} Pastikan Anda memiliki koneksi internet yang stabil')
