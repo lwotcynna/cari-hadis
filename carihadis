@@ -50,7 +50,7 @@ def cari_kata_kunci():
     for j in range(len(ID)):
         print(green + ID[j]+' ', end='')
     print('')
-    pilih = input(f'{yellow}pilih nomor Hadis. Misalnya saja, ' + ID[0] + f': {zero}')
+    pilih = input(f'{yellow}pilih nomor Hadis. Misalnya saja, {green}' + ID[0] + f'{zero}: ')
     ID = pilih
 
 # eksekusi dimulai!
