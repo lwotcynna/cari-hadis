@@ -100,7 +100,7 @@ elif len(args) == 2:
             raise TypeError
     except TypeError:
         mode = ''
-        query = '%20'.join(args[1:])
+        query = '+'.join(args[1:])
 elif len(args) > 2:
     mode = ''
     query = '+'.join(args[1:])
