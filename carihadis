@@ -25,12 +25,13 @@ def cari_hadis():
     terjemah = re.sub(r'\[', yellow, terjemah)
     terjemah = re.sub(r'\]', reset, terjemah)
     terjemah = re.sub(re.compile('<.*?>'), '', terjemah)
-    title = 'Kitab '+ kitab +' nomer '+ ID
-    print(green +'-' * len(title))
+    for i in args[1:]:
+        terjemah = re.sub(f'{i.capitalize()}', f'{green}{i.capitalize()}{reset}', terjemah)
+        terjemah = re.sub(f'{i}', f'{green}{i}{reset}', terjemah)
+    title = 'Hadits '+ kitab +'nomor '+ yellow + ID
     print(title)
-    print('-' * len(title) + zero)
     print(blue+nass+reset)
-    print('\nArtinya:\n', reset + terjemah + zero)
+    print('\n', reset + terjemah + zero)
 
 def cari_kata_kunci():
     global kitab, ID, query
@@ -38,18 +39,22 @@ def cari_kata_kunci():
     raw = urlopen(url)
     JSON = json.loads(bs(raw, 'html.parser').text)
     data = JSON['data']
+
     jumlah_kitab = 0
     for i in range(len(data)):
         kitab = data[i]['kitab']
         jumlah_kitab += 1
         print(str(i+1) +'. '+ kitab)
-    pilih = int(input(f'{yellow}pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')) - 1
+
+    pilih = int(input(f'{yellow}Pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')) - 1
     kitab = data[pilih]['kitab']
     ID = data[pilih]['id']
+
     for j in range(len(ID)):
-        print(green + ID[j]+' ', end='')
+        print(blue + ID[j]+' ', end='')
+
     print('')
-    pilih = input(f'{yellow}pilih nomor Hadis. Misalnya saja, {green}' + ID[0] + f'{zero}: ')
+    pilih = input(f'{yellow}Pilih Nomor Hadis. Misalnya saja, {green}' + ID[0] + f'{zero}: ')
     ID = pilih
 
 # eksekusi dimulai!
@@ -78,7 +83,7 @@ elif len(args) == 2:
             raise TypeError
     except TypeError:
         mode = ''
-        query = '+'.join(args[1:])
+        query = '%20'.join(args[1:])
 elif len(args) > 2:
     mode = ''
     query = '+'.join(args[1:])
