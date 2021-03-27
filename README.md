@@ -1,4 +1,5 @@
 ## Python-Based Pencari Hadis untuk Termux
+Ini project scraping pertama saya.
 Menggunakan API dari carihadis.com
 
 ## Penggunaan
