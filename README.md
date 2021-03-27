@@ -19,6 +19,6 @@ $ ./carihadis
 
 # Thanks to
 * [dannsbass](https://github.com/dannsbass)
-* [tutermuxid](http://t.me/tuter muxid)
+* [tutermuxid](http://t.me/tutermuxid)
 * [Termux Users](http://t.me/TermuxUserID)
 
