@@ -94,7 +94,7 @@ except KeyboardInterrupt:
 except NameError:
     pass
 except TypeError:
-    print(f'{yellow}Maaf, terjadi kesalaha :({zero}')
+    print(f'{yellow}Maaf, terjadi kesalahan :({zero}')
 except HTTPError:
     print(f'{red}E:{zero} data tidak dapat ditemukan')
 except URLError:
