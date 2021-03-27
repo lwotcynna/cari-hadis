@@ -1,6 +1,8 @@
 ## Python-Based Pencari Hadis untuk Termux
 Ini project scraping pertama saya.
-Menggunakan API dari carihadis.com
+Menggunakan API dari carihadis.com.<br>
+Ditulis di Termux menggunakan NeoVim :)<br>
+tes gh termux github push auth token....
 
 ## Penggunaan
 quick start:
