@@ -52,7 +52,7 @@ def cari_kata_kunci():
 
     while True:
         pilih = input(f'{blue}Pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')
-        if pilih in [str(i) for i in range(1, jumlah_kitab)]:
+        if pilih in [str(i) for i in range(1, jumlah_kitab+1)]:
             pilih = int(pilih) - 1
             break
         else:
