@@ -17,6 +17,8 @@ $ ./carihadis
 * Arbain_Nawawi_II json decode error
 * Penjelasan_Hadis_Pilihan
 * dan lain sebagainya :(
+i dont know yet how to figure this out.
+feel free to contribute if you have the solution
 
 # Thanks to
 * [dannsbass](https://github.com/dannsbass)
