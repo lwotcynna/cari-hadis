@@ -1,4 +1,4 @@
-## Python-Based Pencari Hadis
+## Python-Based Pencari Hadis untuk Termux
 Menggunakan API dari carihadis.com
 
 ## Penggunaan
@@ -19,6 +19,6 @@ $ ./carihadis
 
 # Thanks to
 * [dannsbass](https://github.com/dannsbass)
-* [tutermuxid](http://t.me/tutermuxid)
+* [tutermuxid](http://t.me/tuter muxid)
 * [Termux Users](http://t.me/TermuxUserID)
 
