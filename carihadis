@@ -15,9 +15,10 @@ green = '\033[1;92m'
 blue = '\033[1;94m'
 grey = '\033[90m'
 
-def cari_hadis():
+def print_hadith():
     url = api +'?kitab=' + kitab + '&id=' + ID
     raw = urlopen(url)
+
     JSON = json.loads(bs(raw, 'html.parser').text)
     data = JSON['data']['1']
     nass = data['nass']
@@ -25,12 +26,15 @@ def cari_hadis():
     terjemah = re.sub(r'\[', yellow, terjemah)
     terjemah = re.sub(r'\]', reset, terjemah)
     terjemah = re.sub(re.compile('<.*?>'), '', terjemah)
+
     for i in args[1:]:
         terjemah = re.sub(f'{i.capitalize()}', f'{green}{i.capitalize()}{reset}', terjemah)
         terjemah = re.sub(f'{i}', f'{green}{i}{reset}', terjemah)
-    title = 'Hadits '+ kitab +'nomor '+ yellow + ID
-    print(title)
-    print(blue+nass+reset)
+
+    title = 'Hadits '+ reset+kitab+zero +' nomor '+ yellow + ID
+    print(green +'-' * (len(title)-12) + zero)
+    print(title,'\n')
+    print(blue + nass + reset)
     print('\n', reset + terjemah + zero)
 
 def cari_kata_kunci():
@@ -44,17 +48,30 @@ def cari_kata_kunci():
     for i in range(len(data)):
         kitab = data[i]['kitab']
         jumlah_kitab += 1
-        print(str(i+1) +'. '+ kitab)
+        print(str(i+1) +'. '+ reset + kitab + zero)
 
-    pilih = int(input(f'{yellow}Pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')) - 1
+    while True:
+        pilih = input(f'{blue}Pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')
+        if pilih in [str(i) for i in range(1, jumlah_kitab)]:
+            pilih = int(pilih) - 1
+            break
+        else:
+            print(f'{red}Masukkan angka 1-{jumlah_kitab} saja{zero}')
+
     kitab = data[pilih]['kitab']
     ID = data[pilih]['id']
 
     for j in range(len(ID)):
-        print(blue + ID[j]+' ', end='')
-
+        print(green + ID[j]+' ', end='')
     print('')
-    pilih = input(f'{yellow}Pilih Nomor Hadis. Misalnya saja, {green}' + ID[0] + f'{zero}: ')
+
+    while True:
+        pilih = input(f'{blue}Pilih Nomor Hadis. Misalnya saja, {reset}' + ID[0] + f':{yellow} ')
+        if not(pilih) in ID:
+            print(f'{yellow}Pilih salah satu dari angka diatas{zero}')
+        else:
+            break
+
     ID = pilih
 
 # eksekusi dimulai!
@@ -90,14 +107,16 @@ elif len(args) > 2:
 
 try:
     if mode == 'k':
-        cari_hadis()
+        print_hadith()
     else:
         cari_kata_kunci()
-        cari_hadis()
+        print_hadith()
 except KeyboardInterrupt:
     print(f'{red}dibatalkan!{zero}')
 except NameError:
     pass
+except IndexError:
+    print(f'{red}Pilihan Salah{zero}')
 except TypeError:
     print(f'{yellow}Maaf, terjadi kesalahan :({zero}')
 except HTTPError:
