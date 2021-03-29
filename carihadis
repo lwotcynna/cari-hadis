@@ -78,7 +78,6 @@ def print_hadith():
     print(blue + nass + reset)
     print('\n', reset + terjemah + zero)
 
-
 def print_kutubun():
     raw = urlopen(api)
     kutubun = json.loads(bs(raw, 'html.parser').text)['kitab']
@@ -104,7 +103,6 @@ Contoh pemakaian:{green}
 
 try:
     from bs4 import BeautifulSoup as bs
-    raise ModuleNotFoundError
 
     if len(args) == 1:
         print(banner_or_whatever())
