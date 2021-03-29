@@ -3,6 +3,8 @@
 Ini project scraping pertama saya.
 Menggunakan API dari carihadis.com<br>
 
+<img src="https://i.ibb.co/FzCYx1H/Screenshot-20210329-130230-Termux.png" />
+
 ## Penggunaan
 quick start:
 ```bash
