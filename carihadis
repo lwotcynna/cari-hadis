@@ -1,7 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/env python
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
-from bs4 import BeautifulSoup as bs
 import json, sys, re
 
 api = 'http://api.carihadis.com/'
@@ -86,44 +85,46 @@ def print_kutubun():
     for i in range(len(kutubun)):
         print(f'{reset}{i+1}.{green}', kutubun[i])
 
-# eksekusi dimulai!
-if len(args) == 1:
-    print(f"""{blue}                   _   _           _ _ _   _
+def banner_or_whatever():
+    return f'''{blue}                   _   _           _ _ _   _
  _ __  _   _      | | | | __ _  __| (_) |_| |__
 | '_ \| | | |_____| |_| |/ _` |/ _` | | __| '_ \\
 | |_) | |_| |_____|  _  | (_| | (_| | | |_| | | |
 | .__/ \__, |     |_| |_|\__,_|\__,_|_|\__|_| |_|
 |_|    |___/\n-----------------{reset}
-Contoh pemakaian:{yellow}
+Contoh pemakaian:{green}
 
- ./carihadis {reset}Arbain_Nawawi_I:12{yellow}
- ./carihadis {reset}puasa ramadhan{yellow}
+  ./carihadis {reset}puasa ramadhan{green}
+  ./carihadis {reset}<kitab>:<nomor>
 
-{reset}gunakan argumen -kitab untuk menampilkan list.
+  N: {reset}gunakan argumen {yellow}-kitab{reset} untuk menampilkan list <kitab> yang tersedia.
 
-{blue}py-hadith v0.0.1-beta{zero}""")
-elif args[1] == '-kitab':
-        print_kutubun()
-elif len(args) == 2:
-    arg = args[1].split(':')
-    if len(arg) > 1:
-        mode = 'k'
-        kitab = arg[0]
-        ID = arg[1]
-    else:
-        mode = ''
-        query = '+'.join(args[1:])
-
-elif len(args) > 2:
-    mode = ''
-    query = '+'.join(args[1:])
+{blue}py-hadith v0.0.1-beta{zero}
+'''
 
 try:
-    if mode == 'k':
-        print_hadith()
-    else:
+    from bs4 import BeautifulSoup as bs
+    raise ModuleNotFoundError
+
+    if len(args) == 1:
+        print(banner_or_whatever())
+    elif args[1] == '-kitab':
+        print_kutubun()
+    elif len(args) == 2:
+        arg = args[1].split(':')
+        if len(arg) > 1:
+            kitab = arg[0]
+            ID = arg[1]
+            print_hadith()
+        else:
+            query = args[1]
+            cari_kata_kunci()
+            print_hadith()
+    elif len(args) > 2:
+        query = '+'.join(args[1:])
         cari_kata_kunci()
         print_hadith()
+
 except KeyboardInterrupt:
     print(f'{red}dibatalkan!{zero}')
 except IndexError:
@@ -133,9 +134,11 @@ except TypeError:
 except HTTPError:
     print(f'{red}E:{zero} data tidak dapat ditemukan')
 except URLError:
-    print(f'{yellow}W:{zero} tidak dapat ditemukan')
+    print(f'{yellow}W:{zero} Tidak dapat ditemukan')
     print(f'{yellow}W:{zero} Pastikan Anda memiliki koneksi internet yang stabil')
 except json.decoder.JSONDecodeError:
-    print(f'{red}oops, terjadi kesalahan saat parsing{zero}')
-except NameError as er:
-    print(er)
+    print(f'{red}Oops, terjadi kesalahan saat parsing{zero}')
+except ModuleNotFoundError:
+    print(f'{red}E:{zero} Modul bs4 tidak ditemukan')
+    print(f'{yellow}W:{zero} Instal modul bs4 terlebih dahulu: ')
+    print(f'\n{green}  python -m pip install bs4{zero}\n')
