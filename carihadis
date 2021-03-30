@@ -15,22 +15,27 @@ green = '\033[1;92m'
 blue = '\033[1;94m'
 
 def cari_kata_kunci():
-    global kitab, ID, query
+    global kitab, id_, query
     url = api +'?q='+ query
     raw = urlopen(url)
-    JSON = json.loads(bs(raw, 'html.parser').text)
-    data = JSON['data']
+    json_ = json.loads(bs(raw, 'html.parser').text)
+    data = json_['data']
+
+    # checks and exit if the given query remains null
     if data == None:
         raise URLError('')
 
+    # prints list of kitabs matched the query
     jumlah_kitab = 0
     for i in range(len(data)):
         kitab = data[i]['kitab']
         jumlah_kitab += 1
         print(str(i+1) +'. '+ reset + kitab + zero)
 
+    # validation for user input match the given list
     while True:
         pilih = input(f'{blue}Pilih Kitab [1-'+ str(jumlah_kitab) +f']: {zero}')
+
         if pilih in [str(i) for i in range(1, jumlah_kitab+1)]:
             pilih = int(pilih) - 1
             break
@@ -38,56 +43,73 @@ def cari_kata_kunci():
             print(f'{red}Masukkan angka 1-{jumlah_kitab} saja{zero}')
 
     kitab = data[pilih]['kitab']
-    ID = data[pilih]['id']
+    id_ = data[pilih]['id']
 
-    if len(ID) == 1:
-        ID = ID[0]
+    # checks whether there is only one id_ and will then automatically assigned
+    if len(id_) == 1:
+        id_ = id_[0]
     else:
-        for j in range(len(ID)):
-            print(green + ID[j]+' ', end='')
+        for j in range(len(id_)):
+            print(green + id_[j]+' ', end='')
         print('')
 
+        # again, input validation
         while True:
-            pilih = input(f'{blue}Pilih Nomor Hadis. Misalnya saja, {reset}' + ID[0] + f':{yellow} ')
-            if not(pilih) in ID:
+            pilih = input(f'{blue}Pilih Nomor Hadis. Misalnya saja, {reset}' + id_[0] + f':{yellow} ')
+            if not(pilih) in id_:
                 print(f'{yellow}Pilih salah satu dari angka diatas{zero}')
             else:
                 break
-        ID = pilih
+        id_ = pilih
 
 def print_hadith():
     global kitab
-    url = api +'?kitab=' + kitab + '&id=' + ID
+    url = api +'?kitab=' + kitab + '&id=' + id_
     raw = urlopen(url)
 
-    JSON = json.loads(bs(raw, 'html.parser').text)
-    data = JSON['data']['1']
+    # convert json-like string into py-dictionary
+    json_ = json.loads(bs(raw, 'html.parser').text)
+    data = json_['data']['1']
+
+    # checks and return exit if the given query remains null. means query is not found
     if data == None:
         raise URLError('')
+
+# get the data from scraped json
     nass = data['nass']
     terjemah = data['terjemah']
+
+    # for highlighting the rawies
     terjemah = re.sub(r'\[', yellow, terjemah)
     terjemah = re.sub(r'\]', reset, terjemah)
+
+    # make all html tags disappeared
     terjemah = re.sub(re.compile('<.*?>'), '', terjemah)
 
+    # highlights the given query
     for i in args[1:]:
         terjemah = re.sub(f'{i.capitalize()}', f'{green}{i.capitalize()}{reset}', terjemah)
         terjemah = re.sub(f'{i}', f'{green}{i}{reset}', terjemah)
 
+    # convert kitab_format into kitab format
     kitab = ' '.join(kitab.split('_'))
-    title = reset+kitab+zero +' nomor '+ yellow + ID
+    title = reset+kitab+zero +' nomor '+ yellow + id_
+
+    # final output
     print(green +'-' * (len(title)-17) + zero)
     print(title,'\n')
     print(blue + nass + reset)
     print('\n', reset + terjemah + zero)
 
+# prints list of kitabs available in the web
 def print_kutubun():
     raw = urlopen(api)
     kutubun = json.loads(bs(raw, 'html.parser').text)['kitab']
+
     for i in range(len(kutubun)):
         print(f'{reset}{i+1}.{green}', kutubun[i])
 
-def banner_or_whatever():
+def banner_or_whatever(): # template
     return f'''{blue}
                    _   _           _ _ _   _
  _ __  _   _      | | | | __ _  __| (_) |_| |__
@@ -96,7 +118,7 @@ def banner_or_whatever():
 | .__/ \__, |     |_| |_|\__,_|\__,_|_|\__|_| |_|
 |_|    |___/{reset}  v1.0-termux{green}
 -----------------{reset} 
-Pemakaian:{green}
+Pemakaian:
 ./{green}carihadis{reset} [OPSI]
 
 OPSI:
@@ -112,6 +134,7 @@ Contoh:
 Info: {blue}http://www.carihadis.com{zero}
 '''
 
+# start execute
 try:
     from bs4 import BeautifulSoup as bs
 
@@ -123,7 +146,7 @@ try:
         arg = args[1].split(':')
         if len(arg) > 1:
             kitab = arg[0]
-            ID = arg[1]
+            id_ = arg[1]
             print_hadith()
         else:
             query = args[1]
@@ -136,18 +159,18 @@ try:
 
 except KeyboardInterrupt:
     print(f'{red}dibatalkan!{zero}')
-except IndexError:
-    print(f'{red}Pilihan Salah{zero}')
 except TypeError:
     print(f'{yellow}Maaf, terjadi kesalahan :({zero}')
-except HTTPError:
-    print(f'{red}E:{zero} data tidak dapat ditemukan')
-except URLError:
+
+# handling 404 not found url, though in this case is unnecessary
+except HTTPError as er:
+    print(er)
+except URLError: # handling given query not found
     q = ' '.join(query.split('+'))
     print(f'{red}Maaf, tidak ada yang cocok dengan kata kunci "{yellow+q+zero}"\n{red}Cobalah dengan katakunci yang lebih umum{zero}')
 except json.decoder.JSONDecodeError:
     print(f'{red}Oops, terjadi kesalahan saat parsing{zero}')
-except ModuleNotFoundError:
+except ModuleNotFoundError: # when user havent installled bs4 module yet
     print(f'{red}E:{zero} Modul bs4 tidak ditemukan')
     print(f'{yellow}W:{zero} Instal modul bs4 terlebih dahulu: ')
     print(f'\n{green}  python -m pip install bs4{zero}\n')
