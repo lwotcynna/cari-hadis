@@ -5,6 +5,7 @@ import json, sys, re
 
 api = 'http://api.carihadis.com/'
 args = sys.argv
+query = ''
 
 # variabel warna
 zero = '\033[0m'
@@ -120,7 +121,9 @@ def banner_or_whatever(): # template
 -----------------{reset} 
 Pemakaian:
 ./{green}carihadis{reset} [OPSI]
-
+{yellow}
+(pastikan Anda memiliki koneksi internet)
+{reset}
 OPSI:
 -----
  <kata kunci>     - {yellow}mencari hadis berdasarkan kata kunci{reset}
@@ -167,7 +170,7 @@ except HTTPError as er:
     print(er)
 except URLError: # handling given query not found
     q = ' '.join(query.split('+'))
-    print(f'{red}Maaf, tidak ada yang cocok dengan kata kunci "{yellow+q+zero}"\n{red}Cobalah dengan katakunci yang lebih umum{zero}')
+    print(f'{red}Maaf, tidak ada yang cocok dengan kata kunci "{yellow+q+red}"\nCobalah dengan katakunci yang lebih umum{zero}')
 except json.decoder.JSONDecodeError:
     print(f'{red}Oops, terjadi kesalahan saat parsing{zero}')
 except ModuleNotFoundError: # when user havent installled bs4 module yet
